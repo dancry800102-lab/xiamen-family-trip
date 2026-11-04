@@ -7,3 +7,4 @@
 9 位成員：7 位大人、李知芮（3歲）、林新恩（4歲）。支援 9 人均分、7 位大人均分、自選成員（含單人）；新台幣以整數分儲存，依固定名單分配不足一分尾差。新增請求帶冪等識別避免網路重試重複入帳。刪除保留資料庫紀錄但不計入明細與結算。
 
 建置：node scripts/build.mjs。驗證：node --test tests/ledger.test.mjs。本機預覽：node scripts/preview.mjs（Node 24，使用獨立 .preview.sqlite，不連到正式資料庫）。dist/server/index.js 為單一 Worker，內嵌前端資產；drizzle/ 為上線時套用的 SQL 遷移，已套用遷移不可更改。
+2026-11-04 更新：新增 TWD/CNY 各自總支出與成員結算；既有帳目以 TWD 保留。名單顯示中英文姓名、不顯示年齡；住宿為悽泊．宿（廈門中山路八市店）。

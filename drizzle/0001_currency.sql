@@ -1,0 +1,1 @@
+ALTER TABLE expenses ADD COLUMN currency TEXT NOT NULL DEFAULT 'TWD' CHECK(currency IN ('TWD','CNY'));
