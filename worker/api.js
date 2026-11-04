@@ -1,7 +1,7 @@
 import {members} from '../src/ledger-core.js';
 const names=members.map(m=>m.name);
 const json=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'no-store'}});
-export async function handleApi(request,env){
+async function handleApiInternal(request,env){
   if(new URL(request.url).pathname!=='/api/expenses')return json({error:'找不到此功能。'},404);
   if(request.method==='GET'){
     const {results}=await env.DB.prepare('SELECT id,title,cents,payer,mode,participants,currency,created_at AS createdAt FROM expenses WHERE deleted_at IS NULL ORDER BY id DESC').all();
@@ -9,7 +9,7 @@ export async function handleApi(request,env){
   }
   if(!['POST','DELETE'].includes(request.method))return json({error:'不支援此操作。'},405);
   const origin=request.headers.get('Origin');
-  if(origin&&origin!==new URL(request.url).origin)return json({error:'請從旅遊網站操作。'},403);
+  if(origin&&origin!==new URL(request.url).origin&&origin!=='https://dancry800102-lab.github.io')return json({error:'請從旅遊網站操作。'},403);
   if(!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'資料格式不正確。'},415);
   let body;try{body=await request.json();}catch{return json({error:'資料格式不正確。'},400);}
   if(!body||typeof body!=='object')return json({error:'資料格式不正確。'},400);
@@ -30,4 +30,15 @@ export async function handleApi(request,env){
   const row=await env.DB.prepare('SELECT id,title,cents,payer,mode,participants,currency FROM expenses WHERE request_id = ?').bind(requestId).first();
   if([row.title,row.cents,row.payer,row.mode,row.participants,row.currency].some((v,i)=>v!==values[i]))return json({error:'重送的帳目內容不一致，請重新整理。'},409);
   return json({id:row.id},201);
+}
+export async function handleApi(request,env){
+  const origin=request.headers.get('Origin');
+  const allowed=origin==='https://dancry800102-lab.github.io';
+  if(request.method==='OPTIONS'){
+    if(!allowed)return json({error:'不支援此來源。'},403);
+    return new Response(null,{status:204,headers:{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Methods':'GET, POST, DELETE, OPTIONS','Access-Control-Allow-Headers':'Content-Type','Access-Control-Max-Age':'600','Vary':'Origin'}});
+  }
+  const response=await handleApiInternal(request,env);
+  if(allowed){response.headers.set('Access-Control-Allow-Origin',origin);response.headers.set('Vary','Origin');}
+  return response;
 }
