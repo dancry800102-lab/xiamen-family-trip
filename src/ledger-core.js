@@ -10,6 +10,6 @@ export function shares(cents,participants){
 }
 export function summarize(expenses,currency='TWD'){
   const rows=members.map(m=>({...m,paid:0,share:0,net:0}));
-  for(const e of expenses.filter(e=>(e.currency??'TWD')===currency)){rows.find(r=>r.name===e.payer).paid+=e.cents;for(const s of shares(e.cents,e.participants))rows.find(r=>r.name===s.name).share+=s.cents;}
+  for(const e of expenses.filter(e=>!e.settled&&(e.currency??'TWD')===currency)){rows.find(r=>r.name===e.payer).paid+=e.cents;for(const s of shares(e.cents,e.participants))rows.find(r=>r.name===s.name).share+=s.cents;}
   return rows.map(r=>({...r,net:r.paid-r.share}));
 }

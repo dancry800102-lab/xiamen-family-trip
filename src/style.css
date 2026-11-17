@@ -5,3 +5,5 @@
 .english-name{font-family:Arial,sans-serif;letter-spacing:.02em}.info-grid .english-name{font-size:11px}.ledger-overview{grid-template-columns:1fr 1fr}
 
 .dual-balance{display:block}.balance-person{margin-bottom:15px}.balance-amounts{display:grid;grid-template-columns:1fr 1fr;gap:12px}.currency-balance{min-width:0;background:#f0f1e9;padding:12px}.currency-balance>span{display:block;font-size:11px;color:#65766e;margin-bottom:8px}.currency-balance>strong{display:block;white-space:normal;overflow-wrap:anywhere}.currency-balance small{overflow-wrap:anywhere}
+
+.settled-check{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:14px;color:#315b4b}.settled-check input{accent-color:#315b4b}
